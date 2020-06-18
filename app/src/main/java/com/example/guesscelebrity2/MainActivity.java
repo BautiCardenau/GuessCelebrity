@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             //NEED TO CHANGE WEBSITE, NOT WORKING ANYMORE
+            //try with this one when you fix it: https://www.imdb.com/list/ls052283250/
             result = task.execute("http://www.posh24.se/kandisar").get();
             String[] splitResult = result.split("<div class=\"listedArticles\">");
             Pattern p = Pattern.compile("img src=\"(.*?)\"");
