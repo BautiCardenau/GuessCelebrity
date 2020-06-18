@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
 
         try {
+            //NEED TO CHANGE WEBSITE, NOT WORKING ANYMORE
             result = task.execute("http://www.posh24.se/kandisar").get();
             String[] splitResult = result.split("<div class=\"listedArticles\">");
             Pattern p = Pattern.compile("img src=\"(.*?)\"");
