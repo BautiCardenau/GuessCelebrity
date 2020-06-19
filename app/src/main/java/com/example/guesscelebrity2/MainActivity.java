@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -79,23 +82,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class DownloadTask{
+    public class DownloadTask  extends AsyncTask<String,Void,String>{
 
-        public  (String args[]) throws IOException {
-            try{
-            //Instantiating the URL class
-            URL url = new URL("http://www.something.com/");
-            //Retrieving the contents of the specified page
-            Scanner sc = new Scanner(url.openStream());
-            //Instantiating the StringBuffer class to hold the result
-            StringBuffer sb = new StringBuffer();
-            while(sc.hasNext()) {
-                sb.append(sc.next());
-                //System.out.println(sc.next());
-            }
-            //Retrieving the String from the String Buffer object
-            String result = sb.toString();
-            return result;
+        @Override
+        protected String doInBackground(String... urls) {
+
+            String result = "";
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                url = new URL(urls[0]);
+                result = Jsoup.connect(url.toString()).get().html();;
+
+                return result;
 
             } catch (Exception e){
                 e.printStackTrace();
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     public void newQuestion () {
         try {
@@ -157,17 +158,20 @@ public class MainActivity extends AppCompatActivity {
             //NEED TO CHANGE WEBSITE, NOT WORKING ANYMORE
             //try with this one when you fix it: https://www.imdb.com/list/ls052283250/
             result = task.execute("https://www.imdb.com/list/ls052283250/").get();
-            System.out.println(result);
+            //System.out.println(result);
             String[] splitResult = result.split("<div class=\"lister-item-image\">");
-            Pattern p = Pattern.compile("src=\"(.*?)\"");
+            System.out.println(splitResult.toString());  //Chequear que es lo que esta dividiendo
+            //Hasta aca por lo menos me devuelve el html en una string, por ahi el problema es que me lo da con espacios"
+            Pattern p = Pattern.compile(" src=\"(.*?)\"");
             Matcher m = p.matcher(splitResult[0]);
 
 
             while (m.find()){
                 celebPictures.add(m.group(1));
+                Log.i("sources", m.group(1));
             }
 
-            p = Pattern.compile("alt=\"(.*?)\"");
+            p = Pattern.compile(" alt=\"(.*?)\"");
             m = p.matcher(splitResult[0]);
 
             while (m.find()){
