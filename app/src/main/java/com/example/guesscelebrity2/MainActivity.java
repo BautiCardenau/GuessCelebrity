@@ -160,10 +160,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             //NEED TO CHANGE WEBSITE, NOT WORKING ANYMORE
             //try with this one when you fix it: https://www.imdb.com/list/ls052283250/
-            result = task.execute("http://www.posh24.se/kandisar").get();
-            String[] splitResult = result.split("<div class=\"listedArticles\">");
-            Pattern p = Pattern.compile("img src=\"(.*?)\"");
+            result = task.execute("https://www.imdb.com/list/ls052283250/").get();
+            String[] splitResult = result.split("<div class=\"lister-item-image\">");
+            Pattern p = Pattern.compile("src=\"(.*?)\"");
             Matcher m = p.matcher(splitResult[0]);
+
+            Log.i("sources", p.toString());
 
             while (m.find()){
                 celebPictures.add(m.group(1));
