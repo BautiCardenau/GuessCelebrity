@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -20,6 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,29 +79,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class DownloadTask  extends AsyncTask<String,Void,String>{
+    public class DownloadTask{
 
-        @Override
-        protected String doInBackground(String... urls) {
-
-            String result = "";
-            URL url;
-            HttpURLConnection urlConnection = null;
-
-            try {
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
-                while (data != -1){
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-
-                }
-
-                return result;
+        public  (String args[]) throws IOException {
+            try{
+            //Instantiating the URL class
+            URL url = new URL("http://www.something.com/");
+            //Retrieving the contents of the specified page
+            Scanner sc = new Scanner(url.openStream());
+            //Instantiating the StringBuffer class to hold the result
+            StringBuffer sb = new StringBuffer();
+            while(sc.hasNext()) {
+                sb.append(sc.next());
+                //System.out.println(sc.next());
+            }
+            //Retrieving the String from the String Buffer object
+            String result = sb.toString();
+            return result;
 
             } catch (Exception e){
                 e.printStackTrace();
@@ -161,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
             //NEED TO CHANGE WEBSITE, NOT WORKING ANYMORE
             //try with this one when you fix it: https://www.imdb.com/list/ls052283250/
             result = task.execute("https://www.imdb.com/list/ls052283250/").get();
+            System.out.println(result);
             String[] splitResult = result.split("<div class=\"lister-item-image\">");
             Pattern p = Pattern.compile("src=\"(.*?)\"");
             Matcher m = p.matcher(splitResult[0]);
 
-            Log.i("sources", p.toString());
 
             while (m.find()){
                 celebPictures.add(m.group(1));
